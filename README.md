@@ -1,65 +1,42 @@
-# Urbanscapes-LK: Multi-Criteria Spatial Optimization for Infrastructure Site Selection
-## Component 4: Spatial Decision Support System (SDSS)
-**Target Region:** Matale District, Central Province, Sri Lanka ($7.35^\circ - 8.05^\circ\text{N}$, $80.45^\circ - 81.00^\circ\text{E}$)  
-**Institution:** Sri Lanka Institute of Information Technology (SLIIT)  
-**Project ID:** TAF_J26 – IT – 337 | **Student ID:** IT23170902  
+# Urban-Growth-Optimizer_IT-337
+We are building an automated spatial growth prediction, unauthorized building detection, automated lands valuation, and infrastructure optimization system for the Urban Development Authority of Sri Lanka.
 
 ---
 
-### Project Overview
-This repository contains the standalone, autonomous Python-based spatial optimization engine for public infrastructure site selection (Schools, Hospitals, Transport Hubs, and Commercial Centers) across Matale District.
+## Component 4: Multi-Criteria Infrastructure Spatial Optimization DSS
 
-The system combines:
-1. **Analytic Hierarchy Process (AHP)** for multi-criteria weighting ($CR < 0.032$, Saaty-validated).
-2. **Topographic Digital Elevation Models (DEM)** from NASA SRTM 30m radar data (`data/matale_dem.tif`).
-3. **OpenStreetMap GIS Layers** (Road network, water bodies, protected conservation areas, existing infrastructure).
-4. **Dual Metaheuristic Optimizers**: Spatial Genetic Algorithm (GA) and Particle Swarm Optimization (PSO).
-5. **Interactive 3D WebGL Dashboard**: Powered by Three.js and Leaflet with Google Satellite / Hybrid / Streets base layers.
-6. **Highest & Best Use (HBU) Reverse Siting Engine**: Evaluates any user-selected coordinates and predicts optimal infrastructure, capacity, structural floors, foundation type, and rooftop solar PV potential.
+A GIS-based Spatial Decision Support System (SDSS) integrating Analytic Hierarchy Process (AHP), Weighted Linear Combination (WLC), and dual Metaheuristic Optimization (GA vs. PSO) to identify optimal public facility sites (schools, hospitals) in Matale District.
 
----
+### Key Features
+- **AHP Engine**: Saaty eigenvector weighting across 8 environmental & demographic criteria with Consistency Ratio validation ($CR < 0.032$).
+- **Dual Metaheuristic Optimizers**: Genetic Algorithm (GA) vs. Particle Swarm Optimization (PSO) for continuous spatial site discovery.
+- **Real GIS Data Ingestion**:
+  - NASA SRTM 30m DEM (elevation & metric slope)
+  - WorldPop 100m raster fused with 63,860 OSM building footprints
+  - OSM Sri Lanka road network (11,116 segments)
+  - 749 waterways with statutory flood buffers (60m rivers, 30m canals)
+  - 125 religious/cultural heritage precinct buffers (30m)
+- **NBRO & CEA Hard Constraint Masking**: Automatic disqualification with legal penalty (`-999.0`).
+- **Reverse HBU Siting & Building Spec Predictor**: Max recommended floors, Solar PV potential (kWp), and estimated construction budget.
+- **Interactive 2D & 3D WebGL Dashboard**: Leaflet GIS map with Three.js 3D terrain viewer on port 8050.
+- **Empirical Validation**: Ground-truth validation against existing Matale facilities (Hospital AUC: 88.24%, School AUC: 79.20%, Mann-Whitney $p < 0.001$).
 
-### Project Structure
-```text
-reasearch/
-├── proposal_component4.md       # SLIIT Research Proposal Document
-├── spatial_optimization/        # Core Research & Implementation Code
-│   ├── ahp_engine.py            # Analytic Hierarchy Process matrix evaluator & CR validator
-│   ├── genetic_algorithm.py     # Continuous 2D/3D Spatial Genetic Algorithm optimizer
-│   ├── pso_optimizer.py         # Continuous Spatial Particle Swarm Optimization engine
-│   ├── real_data_loader.py      # Real GIS, DEM & OpenStreetMap parser & rasterizer
-│   ├── suitability_surface.py   # Penalty-masked multi-criteria suitability landscape
-│   ├── building_feature_predictor.py # Demographic, structural & solar capacity predictor
-│   ├── interactive_dashboard.py # Main interactive web dashboard (Google Maps + 3D WebGL)
-│   ├── facility_validation.py   # Empirical validation against historical facilities
-│   ├── statistical_benchmark.py # GA vs PSO convergence & statistical rigor benchmarks
-│   ├── sensitivity_analysis.py  # Criteria weight robustness & spatial sensitivity tests
-│   ├── requirements.txt         # Python dependencies
-│   ├── data/                    # NASA SRTM GeoTIFF, road & boundary shapefiles
-│   └── outputs/                 # Benchmark charts, heatmaps, and validation JSONs
-├── AGENTS.md
-├── CLAUDE.md
-└── README.md
+### Setup & Installation
+
+```powershell
+cd spatial_optimization
+pip install -r requirements.txt
 ```
 
----
+### Running the Interactive Dashboard
 
-### Quick Start
+```powershell
+python interactive_dashboard.py
+```
+Then navigate to `http://localhost:8050` in your web browser.
 
-1. **Install Dependencies:**
-   ```bash
-   cd spatial_optimization
-   pip install -r requirements.txt
-   ```
+### Running Unit Tests
 
-2. **Launch the Interactive 3D WebGL Dashboard:**
-   ```bash
-   python interactive_dashboard.py
-   ```
-   Open your browser at: **`http://localhost:8050`**
-
-3. **Run Statistical Benchmarks & Validation:**
-   ```bash
-   python statistical_benchmark.py
-   python facility_validation.py
-   ```
+```powershell
+pytest tests/ -v
+```
